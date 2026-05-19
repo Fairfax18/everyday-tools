@@ -9,10 +9,8 @@ export default function Navigation() {
         </Link>
         <ul className="flex space-x-6">
           <li><Link href="/world-clock" className="hover:text-blue-300 transition">World Clock</Link></li>
-          <li><Link href="/timer" className="hover:text-blue-300 transition">Timer</Link></li>
-          <li><Link href="/todo" className="hover:text-blue-300 transition">To-Do</Link></li>
-          <li><Link href="/calculator" className="hover:text-blue-300 transition">Calculator</Link></li>
-          <li><Link href="/converter" className="hover:text-blue-300 transition">Converter</Link></li>
+          <li><Link href="/word-counter" className="hover:text-blue-300 transition">Word Counter</Link></li>
+          <li><Link href="/password-generator" className="hover:text-blue-300 transition">Password Gen</Link></li>
         </ul>
       </div>
     </nav>
