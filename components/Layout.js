@@ -2,8 +2,42 @@ import '../app/globals.css';
 import AppLayout from '../components/AppLayout';
 
 export const metadata = {
-  title: 'Everyday Tools',
-  description: 'Minimalist everyday utilities.',
+  title: {
+    template: '%s | Everyday Tools',
+    default: 'Everyday Tools | Productivity, simplified.', // Used when a specific page doesn't set a title
+  },
+  description: 'A minimal, offline-first suite of everyday utilities designed to keep your workflow fast and focus-driven.',
+  keywords: ['productivity tools', 'developer tools', 'calculators', 'pomodoro timer', 'json formatter', 'password generator'],
+  metadataBase: new URL('https://everyday-tools-tan.vercel.app/'), // TODO: Replace with your actual live Vercel URL
+  
+  openGraph: {
+    title: 'Everyday Tools | Productivity, simplified.',
+    description: 'A minimal, offline-first suite of everyday utilities designed to keep your workflow fast and focus-driven.',
+    url: 'https://everyday-tools-tan.vercel.app/',
+    siteName: 'Everyday Tools',
+    images: [
+      {
+        url: '/og-image.png', // We will add this image next
+        width: 1200,
+        height: 630,
+        alt: 'Everyday Tools Preview',
+      },
+    ],
+    locale: 'en_US',
+    type: 'website',
+  },
+  
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Everyday Tools | Productivity, simplified.',
+    description: 'A minimal suite of everyday utilities.',
+    images: ['/og-image.png'],
+  },
+  
+  icons: {
+    icon: '/icon.svg',
+    apple: '/apple-icon.png',
+  },
 };
 
 export default function RootLayout({ children }) {
