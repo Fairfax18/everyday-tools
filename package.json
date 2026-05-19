@@ -17,5 +17,6 @@
     "autoprefixer": "latest",
     "postcss": "latest",
     "tailwindcss": "latest"
+    "@tailwindcss/postcss": "latest"
   }
 }
