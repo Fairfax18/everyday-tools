@@ -28,8 +28,11 @@ export default function PasswordGenerator() {
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(password);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
+    
+    // Instead of changing button text, trigger the sleek new global toast!
+    if (window.showToast) {
+      window.showToast('Password copied to clipboard');
+    }
   };
 
   const toggleOption = (key) => setOptions({ ...options, [key]: !options[key] });
