@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import AdBanner from '../components/AdBanner';  
 
 export default function Home() {
   // Spotlight tools: Highlight the 3 most universally useful tools
@@ -111,6 +112,15 @@ export default function Home() {
             </Link>
           ))}
         </div>
+      </motion.section>
+
+    <motion.section 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.4 }}
+        className="mt-16"
+      >
+        <AdBanner dataAdSlot="1234567890" /> {/* Replace with your real Slot ID */}
       </motion.section>
 
     </div>

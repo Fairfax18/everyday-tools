@@ -1,4 +1,5 @@
 import '../app/globals.css';
+import Script from 'next/script';
 import AppLayout from '../components/AppLayout';
 
 export const metadata = {
@@ -43,6 +44,14 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        <Script
+          async
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+          crossOrigin="anonymous"
+          strategy="afterInteractive"
+        />
+      </head>
       <body className="bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-100 transition-colors duration-300 antialiased">
         <AppLayout>
           {children}
