@@ -12,7 +12,8 @@
     "next": "latest",
     "react": "latest",
     "react-dom": "latest",
-    "framer-motion": "latest"
+    "framer-motion": "latest",
+    "@vercel/analytics": "^2.0"
   },
   "devDependencies": {
     "autoprefixer": "latest",
