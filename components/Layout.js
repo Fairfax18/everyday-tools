@@ -47,9 +47,8 @@ export default function RootLayout({ children }) {
       <head>
         <Script>
           async
-          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${process.env.NEXT_PUBLIC_ADSENSE_ID}`}
+          src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6390065021877737`}
           crossOrigin="anonymous"
-          strategy="beforeInteractive"
         </Script>
       </head>
       <body className="bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-100 transition-colors duration-300 antialiased">
