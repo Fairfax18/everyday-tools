@@ -1,3 +1,4 @@
+import { Analytics } from '@vercel/analytics/next';
 import './globals.css';
 import AppLayout from '../components/AppLayout';
 
@@ -8,6 +9,8 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white dark:bg-[#0a0a0a] text-neutral-900 dark:text-neutral-100 transition-colors duration-300">
         <AppLayout>{children}</AppLayout>
+        
+        <Analytics />
       </body>
     </html>
   );
