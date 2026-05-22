@@ -10,19 +10,21 @@ export default function AppLayout({ children }) {
   const [openCategory, setOpenCategory] = useState('time');
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  
-  // Mobile drawer state
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   
+  // --- GLOBAL TOAST STATE ---
+  const [toast, setToast] = useState({ visible: false, message: '' });
+
   const pathname = usePathname();
   const router = useRouter();
 
-  // Dark Mode & Keyboard Listeners
   useEffect(() => {
+    // Dark Mode Initialization
     const isDarkMode = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
     setIsDark(isDarkMode);
     document.documentElement.classList.toggle('dark', isDarkMode);
 
+    // Global Keyboard Shortcuts
     const handleKeyDown = (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
@@ -31,7 +33,22 @@ export default function AppLayout({ children }) {
       if (e.key === 'Escape') setShowSearch(false);
     };
     window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
+
+    // --- GLOBAL TOAST ENGINE ---
+    // This allows any child component to call window.showToast('Message')
+    let toastTimeout;
+    window.showToast = (message) => {
+      setToast({ visible: true, message });
+      clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        setToast((prev) => ({ ...prev, visible: false }));
+      }, 3000); // Hides after 3 seconds
+    };
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+      clearTimeout(toastTimeout);
+    };
   }, []);
 
   const toggleTheme = () => {
@@ -44,8 +61,6 @@ export default function AppLayout({ children }) {
   const allTools = toolsCategories.flatMap(c => c.tools);
   const filteredTools = allTools.filter(t => t.name.toLowerCase().includes(searchQuery.toLowerCase()));
 
-  // --- REUSABLE NAVIGATION ACCORDION ---
-  // We extract this so we can use it in both the Desktop Sidebar AND the Mobile Drawer
   const renderNavigation = () => (
     <nav className="flex-1 space-y-1 overflow-y-auto">
       {toolsCategories.map((cat) => (
@@ -66,7 +81,7 @@ export default function AppLayout({ children }) {
                   <li key={t.path}>
                     <Link 
                       href={t.path} 
-                      onClick={() => setIsMobileOpen(false)} // Closes drawer on mobile when clicked
+                      onClick={() => setIsMobileOpen(false)}
                       className={`text-sm block py-1.5 px-3 rounded-lg transition-all ${pathname === t.path ? 'bg-neutral-900 text-white dark:bg-white dark:text-neutral-900' : 'text-neutral-600 dark:text-neutral-400 hover:bg-neutral-100 dark:hover:bg-neutral-900'}`}
                     >
                       {t.name}
@@ -84,8 +99,7 @@ export default function AppLayout({ children }) {
   return (
     <div className="flex flex-col md:flex-row min-h-screen bg-white dark:bg-[#0a0a0a] transition-colors duration-300">
       
-      {/* --- MOBILE HEADER --- */}
-      {/* Only visible on small screens. Stays sticky at the top. */}
+      {/* Mobile Header */}
       <header className="md:hidden sticky top-0 z-40 flex items-center justify-between p-4 bg-white/80 dark:bg-[#0a0a0a]/80 backdrop-blur-md border-b border-neutral-200 dark:border-neutral-800">
         <Link href="/" className="text-lg font-bold tracking-tighter">Everyday Tools.</Link>
         <div className="flex items-center gap-3">
@@ -101,21 +115,12 @@ export default function AppLayout({ children }) {
         </div>
       </header>
 
-      {/* --- MOBILE DRAWER OVERLAY --- */}
+      {/* Mobile Drawer Overlay */}
       <AnimatePresence>
         {isMobileOpen && (
           <>
-            {/* Backdrop */}
-            <motion.div 
-              initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} 
-              onClick={() => setIsMobileOpen(false)} 
-              className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden"
-            />
-            {/* Drawer */}
-            <motion.div 
-              initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="fixed inset-y-0 left-0 w-3/4 max-w-sm bg-white dark:bg-[#111] z-50 p-6 flex flex-col border-r border-neutral-200 dark:border-neutral-800 md:hidden shadow-2xl"
-            >
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={() => setIsMobileOpen(false)} className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 md:hidden" />
+            <motion.div initial={{ x: '-100%' }} animate={{ x: 0 }} exit={{ x: '-100%' }} transition={{ type: 'spring', damping: 25, stiffness: 200 }} className="fixed inset-y-0 left-0 w-3/4 max-w-sm bg-white dark:bg-[#111] z-50 p-6 flex flex-col border-r border-neutral-200 dark:border-neutral-800 md:hidden shadow-2xl">
               <div className="flex justify-between items-center mb-10">
                 <Link href="/" onClick={() => setIsMobileOpen(false)} className="text-xl font-bold tracking-tighter">Everyday Tools.</Link>
                 <button onClick={() => setIsMobileOpen(false)} className="p-2 text-neutral-500 hover:text-red-500 transition-colors">
@@ -128,17 +133,15 @@ export default function AppLayout({ children }) {
         )}
       </AnimatePresence>
 
-      {/* --- DESKTOP SIDEBAR --- */}
+      {/* Desktop Sidebar */}
       <aside className="w-64 border-r border-neutral-200 dark:border-neutral-800 hidden md:flex p-6 sticky top-0 h-screen flex-col">
         <Link href="/" className="text-xl font-bold mb-10 block tracking-tighter">Everyday Tools.</Link>
         {renderNavigation()}
       </aside>
 
-      {/* --- MAIN CONTENT --- */}
+      {/* Main Content */}
       <main className="flex-1 overflow-y-auto">
         <div className="max-w-4xl mx-auto p-6 md:p-8">
-          
-          {/* Desktop Top Controls (Hidden on Mobile) */}
           <header className="hidden md:flex justify-end gap-4 mb-12">
             <button onClick={() => setShowSearch(true)} className="text-sm text-neutral-400 border border-neutral-200 dark:border-neutral-800 px-3 py-1.5 rounded-md hover:border-neutral-400 transition flex items-center gap-2">
               <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -155,8 +158,7 @@ export default function AppLayout({ children }) {
         </div>
       </main>
 
-      {/* --- COMMAND PALETTE MODAL --- */}
-      {/* Kept unchanged, it overlays everything perfectly */}
+      {/* Command Palette Modal */}
       <AnimatePresence>
         {showSearch && (
           <>
@@ -174,6 +176,24 @@ export default function AppLayout({ children }) {
           </>
         )}
       </AnimatePresence>
+
+      {/* --- GLOBAL FLOATING TOAST --- */}
+      <AnimatePresence>
+        {toast.visible && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50, scale: 0.9 }} 
+            animate={{ opacity: 1, y: 0, scale: 1 }} 
+            exit={{ opacity: 0, y: 20, scale: 0.9 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] flex items-center gap-3 bg-neutral-900 dark:bg-white text-white dark:text-neutral-900 px-6 py-3 rounded-full shadow-2xl"
+          >
+            <div className="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-white text-[10px] font-bold">
+              ✓
+            </div>
+            <span className="text-sm font-bold tracking-wide">{toast.message}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
     </div>
   );
 }
